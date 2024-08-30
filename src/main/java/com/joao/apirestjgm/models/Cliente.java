@@ -3,6 +3,8 @@ package com.joao.apirestjgm.models;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -23,35 +25,40 @@ public class Cliente {
 
     @Column(name = "nome", length = 100, nullable = false)
     @NotBlank(groups = {CreateCliente.class, UpdateCliente.class})
+    @Size(max = 100)
     private String nome;
 
     @Column(name = "sobrenome", length = 100, nullable = false)
     @NotBlank(groups = {CreateCliente.class, UpdateCliente.class})
+    @Size(max = 100)
     private String sobrenome;
 
-    @Column(name = "idade", length = 2, nullable = false)
-    @NotBlank(groups = {CreateCliente.class, UpdateCliente.class})
-    private String idade;
+    @Column(name = "idade", nullable = false)
+    @NotNull(groups = {CreateCliente.class, UpdateCliente.class})
+    private Integer idade;
 
     @Column(name = "cpf", length = 11, nullable = false)
     @NotBlank(groups = {CreateCliente.class, UpdateCliente.class})
+    @Size(max = 11)
     private String cpf;
 
     @Column(name = "telefone", length = 11, nullable = false)
     @NotBlank(groups = {CreateCliente.class, UpdateCliente.class})
+    @Size(max = 11)
     private String telefone;
 
-    @Column(name = "email", length = 100, nullable = false)
+    @Column(name = "email", nullable = false)
     @NotBlank(groups = {CreateCliente.class, UpdateCliente.class})
     private String email;
 
-    //private list<Task> tasks = new ArrayList<>();
-
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "endereco_id", referencedColumnName = "id")
+    private Endereco endereco;
 
     public Cliente() {
     }
 
-    public Cliente(Long id, String nome, String sobrenome, String idade, String cpf, String telefone, String email) {
+    public Cliente(Long id, String nome, String sobrenome, Integer idade, String cpf, String telefone, String email) {
         this.id = id;
         this.nome = nome;
         this.sobrenome = sobrenome;
@@ -85,11 +92,11 @@ public class Cliente {
         this.sobrenome = sobrenome;
     }
 
-    public String getIdade() {
+    public Integer getIdade() {
         return idade;
     }
 
-    public void setIdade(String idade) {
+    public void setIdade(Integer idade) {
         this.idade = idade;
     }
 
@@ -117,23 +124,40 @@ public class Cliente {
         this.email = email;
     }
 
+    public Endereco getEndereco() {
+        return endereco;
+    }
+
+    public void setEndereco(Endereco endereco) {
+        this.endereco = endereco;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null) return false;
-        if (!(o instanceof Cliente cliente)) return false;
-        Cliente other = (Cliente) o;
-        if (this.id != null)
-            if (other.id != null) return false;
-            else if (!this.id.equals(other.id)) return false;
-        return Objects.equals(id, cliente.id) && Objects.equals(nome, cliente.nome) && Objects.equals(sobrenome, cliente.sobrenome)
-                && Objects.equals(idade, cliente.idade) && Objects.equals(cpf, cliente.cpf) && Objects.equals(telefone, cliente.telefone)
-                && Objects.equals(email, cliente.email);
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Cliente cliente = (Cliente) o;
+
+        // Comparar IDs se ambos não forem nulos
+        if (id != null && cliente.id != null && !id.equals(cliente.id)) {
+            return false;
+        }
+
+        // Comparar os demais campos
+        return Objects.equals(id, cliente.id) &&
+                Objects.equals(nome, cliente.nome) &&
+                Objects.equals(sobrenome, cliente.sobrenome) &&
+                Objects.equals(idade, cliente.idade) &&
+                Objects.equals(cpf, cliente.cpf) &&
+                Objects.equals(telefone, cliente.telefone) &&
+                Objects.equals(email, cliente.email)&&
+                Objects.equals(endereco, cliente.endereco);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, nome, sobrenome, idade, cpf, telefone, email);
+        return Objects.hash(id, nome, sobrenome, idade, cpf, telefone, email, endereco);
     }
 }
 
