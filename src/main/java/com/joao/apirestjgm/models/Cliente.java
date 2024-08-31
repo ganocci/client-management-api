@@ -13,9 +13,6 @@ import java.util.Objects;
 @Table(name = Cliente.TABLE_NAME)
 public class Cliente {
 
-    public interface CreateCliente {}
-    public interface UpdateCliente {}
-
     public static final String TABLE_NAME = "cliente";
 
     @Id
@@ -24,34 +21,34 @@ public class Cliente {
     private Long id;
 
     @Column(name = "nome", length = 100, nullable = false)
-    @NotBlank(groups = {CreateCliente.class, UpdateCliente.class})
+    @NotBlank
     @Size(max = 100)
     private String nome;
 
     @Column(name = "sobrenome", length = 100, nullable = false)
-    @NotBlank(groups = {CreateCliente.class, UpdateCliente.class})
+    @NotBlank
     @Size(max = 100)
     private String sobrenome;
 
     @Column(name = "idade", nullable = false)
-    @NotNull(groups = {CreateCliente.class, UpdateCliente.class})
+    @NotNull
     private Integer idade;
 
     @Column(name = "cpf", length = 11, nullable = false)
-    @NotBlank(groups = {CreateCliente.class, UpdateCliente.class})
-    @Size(max = 11)
+    @NotBlank
+    @Size(min = 11,max = 11)
     private String cpf;
 
     @Column(name = "telefone", length = 11, nullable = false)
-    @NotBlank(groups = {CreateCliente.class, UpdateCliente.class})
-    @Size(max = 11)
+    @NotBlank
+    @Size(min = 11,max = 11)
     private String telefone;
 
     @Column(name = "email", nullable = false)
-    @NotBlank(groups = {CreateCliente.class, UpdateCliente.class})
+    @NotBlank
     private String email;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "endereco_id", referencedColumnName = "id")
     private Endereco endereco;
 
