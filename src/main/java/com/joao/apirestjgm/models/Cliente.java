@@ -2,9 +2,11 @@ package com.joao.apirestjgm.models;
 
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import org.hibernate.validator.constraints.br.CPF;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -21,31 +23,33 @@ public class Cliente {
     private Long id;
 
     @Column(name = "nome", length = 100, nullable = false)
-    @NotBlank
+    @NotBlank(message = ("Nome é Obrigatório"))
     @Size(max = 100)
     private String nome;
 
     @Column(name = "sobrenome", length = 100, nullable = false)
-    @NotBlank
+    @NotBlank(message = ("Sobrenome é Obrigatório"))
     @Size(max = 100)
     private String sobrenome;
 
     @Column(name = "idade", nullable = false)
-    @NotNull
+    @NotNull(message = ("Idade é Obrigatória"))
     private Integer idade;
 
     @Column(name = "cpf", length = 11, nullable = false)
-    @NotBlank
+    @NotBlank(message = ("CPF é Obrigatório"))
     @Size(min = 11,max = 11)
+    @CPF(message = ("CPF inválido"))
     private String cpf;
 
     @Column(name = "telefone", length = 11, nullable = false)
-    @NotBlank
+    @NotBlank(message = ("Telefone é Obrigatório"))
     @Size(min = 11,max = 11)
     private String telefone;
 
     @Column(name = "email", nullable = false)
-    @NotBlank
+    @NotBlank(message = ("E-mail é Obrigatório"))
+    @Email(message = ("E-mail inválido"))
     private String email;
 
     @ManyToOne(cascade = CascadeType.ALL)

@@ -7,8 +7,6 @@ import com.joao.apirestjgm.models.dtos.ClienteDTO;
 import com.joao.apirestjgm.repositories.ClienteRepository;
 import com.joao.apirestjgm.repositories.EnderecoRepository;
 import com.joao.apirestjgm.services.ClienteService;
-import com.joao.apirestjgm.validators.CPFValidator;
-import com.joao.apirestjgm.validators.EmailValidator;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,20 +22,14 @@ public class ClienteServiceImpl implements ClienteService {
     private final ClienteRepository clienteRepository;
     private final EnderecoRepository enderecoRepository;
     private final ClienteMapper clienteMapper;
-    private final CPFValidator cpfValidator;
-    private final EmailValidator emailValidator;
 
     @Autowired
     public ClienteServiceImpl(ClienteRepository clienteRepository,
                               EnderecoRepository enderecoRepository,
-                              ClienteMapper clienteMapper,
-                              CPFValidator cpfValidator,
-                              EmailValidator emailValidator) {
+                              ClienteMapper clienteMapper){
         this.clienteRepository = clienteRepository;
         this.enderecoRepository = enderecoRepository;
         this.clienteMapper = clienteMapper;
-        this.cpfValidator = cpfValidator;
-        this.emailValidator = emailValidator;
     }
 
 
@@ -45,23 +37,22 @@ public class ClienteServiceImpl implements ClienteService {
     @Transactional
     public ClienteDTO criarCliente(ClienteDTO clienteDTO) {
 
-        if (!cpfValidator.isValid(clienteDTO.getCpf())) {
-            throw new IllegalArgumentException("CPF inválido");
-        }
-
-
-        if (!emailValidator.isValid(clienteDTO.getEmail())) {
-            throw new IllegalArgumentException("Email inválido");
-        }
-
-        /*
-        // Verifica se o CPF já existe
         if (clienteRepository.existsByCpf(clienteDTO.getCpf())) {
-            throw new IllegalArgumentException("CPF já está em uso");
-        }*/
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "CPF já cadastrado.");
+        }
 
+        Endereco endereco = new Endereco();
+        endereco.setCep(clienteDTO.getEndereco().getCep());
+        endereco.setLogradouro(clienteDTO.getEndereco().getLogradouro());
+        endereco.setComplemento(clienteDTO.getEndereco().getComplemento());
+        endereco.setBairro(clienteDTO.getEndereco().getBairro());
+        endereco.setLocalidade(clienteDTO.getEndereco().getLocalidade());
+        endereco.setUf(clienteDTO.getEndereco().getUf());
+
+        endereco = enderecoRepository.save(endereco);
 
         Cliente cliente = clienteMapper.toEntity(clienteDTO);
+        cliente.setEndereco(endereco);
         cliente = clienteRepository.save(cliente);
 
         return clienteMapper.toDTO(cliente);

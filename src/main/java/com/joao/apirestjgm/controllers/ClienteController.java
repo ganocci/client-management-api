@@ -2,6 +2,7 @@ package com.joao.apirestjgm.controllers;
 
 import com.joao.apirestjgm.models.dtos.ClienteDTO;
 import com.joao.apirestjgm.services.ClienteService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +30,7 @@ public class ClienteController {
     }
 
     @PostMapping
-    public ResponseEntity<ClienteDTO> criar(@RequestBody ClienteDTO clienteDTO) {
+    public ResponseEntity<ClienteDTO> criar( @Valid @RequestBody ClienteDTO clienteDTO) {
         ClienteDTO novoCliente = clienteService.criarCliente(clienteDTO);
         return new ResponseEntity<>(novoCliente, HttpStatus.CREATED);
     }
