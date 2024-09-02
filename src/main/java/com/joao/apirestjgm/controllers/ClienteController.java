@@ -29,7 +29,6 @@ public class ClienteController {
             @ApiResponse(responseCode = "204", description = "Nenhum cliente encontrado"),
             @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
     })
-    @PostMapping
     public ResponseEntity<List<ClienteDTO>> listarTodos() {
         List<ClienteDTO> clientes = clienteService.listarClientes();
         return ResponseEntity.ok(clientes);
