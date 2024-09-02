@@ -38,6 +38,6 @@ A API permite realizar operações de CRUD para as entidades Cliente e Endereço
 - Mensagens Personalizadas: Mensagens de erro customizadas(CPF e Email inválidos, por exemplo).
 
 
-## Acesse a API:
+## Acesse a API/Documentação:
 
 Swagger UI: http://localhost:8080/swagger-ui/index.html
